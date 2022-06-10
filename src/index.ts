@@ -1,6 +1,9 @@
 import express, { Express, Request, Response } from 'express';
 import fs from 'fs';
 import bodyParser from 'body-parser';
+import urls from './urls-map';
+
+const log = console.log;
 
 const app: Express = express();
 app.use(bodyParser.json()); // for parsing application/json
@@ -13,23 +16,16 @@ interface KidSaid {
   context: string;
   said: string;
 }
-const urls = {
-  g: (query: string, tokens: string[]): string =>
-    'https://google.com/search?q=' + tokens.join(' '),
-  yt: (query: string, tokens: string[]): string =>
-    'https://www.youtube.com/results?search_query=' + tokens.join(' '),
-};
 const commands = {
   kidsaid: (query: string, tokens: string[]) => {
     const [kid, ...said] = tokens;
-    return `/kid-said?kid=${kid}&said=${encodeURIComponent(said.join(' '))}`;
+    return `/api/kid-said?kid=${kid}&said=${encodeURIComponent(said.join(' '))}`;
   },
 };
 const maps: any = {
-  g: urls.g,
-  yt: urls.yt,
+  ...urls,
   set: (query: string, tokens: string[]) => cache._set(query),
-  kidsaid: commands.kidsaid,
+    kidsaid: commands.kidsaid,
 };
 
 class WriteThroughCache {
@@ -65,11 +61,11 @@ app.get('/fail', (req: Request, res: Response) => {
     'Command failed - no such command, or your command doesnt have a query'
   );
 });
-app.get('/kid-said', (req: Request, res: Response) => {
+app.get('/api/kid-said', (req: Request, res: Response) => {
   res.set('content-type', 'text/html');
   res.sendFile('./templates/kidsaid.html', { root: __dirname + '/../' });
 });
-app.post('/kid-said', (req: Request, res: Response) => {
+app.post('/api/kid-said', (req: Request, res: Response) => {
   console.log('GOT KID SAID!!!', req.body);
 
   const kidSaid: KidSaid = {

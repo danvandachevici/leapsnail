@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<body>
+  <form id="kid-said-form">
+    <input type="text" name="kid" placeholder="Name">
+    <input type="text" name="context" placeholder="Context">
+    <input type="date" name="date">
+    <input type="text" name="said" placeholder="Said">
+
+    <input type="submit" value="Submit">
+  </form>
+  <script type="application/javascript">
+    const formData = document.getElementById('kid-said-form');
+
+    if (form.attachEvent) {
+          form.attachEvent("submit", processForm);
+        } else {
+              form.addEventListener("submit", processForm);
+            }
+  </script>
+</body>
